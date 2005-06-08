@@ -1,0 +1,26 @@
+Requirements for Compiler-Construction-Project
+
+Requirements
+*	formal definition of input language syntax (EBNF)
+*	input language is subset of existing programming language (therefore with defined semantics)
+
+*	support for basic types (integer, boolean, char), composite types (records, arrays)
+*	parameter passing mechanism (by-value for basic types, and by-reference for composite types)
+
+*	parameterized local hiding by procedures
+*	separate compilation
+
+*	formal definition if output language syntax (EBNF)
+*	informal description of output language semantics
+
+*	compiler should be able to compile it’s own source
+
+Means
+*	scanner ?
+*	parser
+*	code generator
+*	virtual machine (interpreting output language)
+
+Decisions
+*	input language: subset of ANSI-C
+

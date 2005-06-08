@@ -1,0 +1,79 @@
+Virtual Machine Definitions
+
+1.	machine conventions
+32 registers
+memory is bytes addressed
+instructions are word (8bytes) addressed
+2.	instruction format:
+	integer-0 (32)	integer-1 (32)
+F1	opcode (8)	operandA (8)	operandB (8)	0	0	0	0	operandC(8)
+F2	opcode (8)	operandA (8)	operandB (8)	0	operandC(32)
+F3	opcode (8)	0	0	0	operandC(32)
+
+name	instruction format	actual operation	programmcounter	comment
+arithmetic instructions
+ADD	F1	r[a] = r[b] + r[c]	PC+1	
+ADDI	F2	r[a] = r[b] + c		
+SUB	F1	r[a] = r[b] - r[c]		
+SUBI	F2	r[a] = r[b] - c		
+CMP	F1	r[a] = r[b] - r[c]		
+CMPI	F2	r[a] = r[b] - c		
+MUL	F1	r[a] = r[b] * r[c]		
+MULI	F2	r[b] = r[b] * c		
+DIV	F1	r[a] = r[b] / r[c]		
+DIVI	F2	r[b] = r[b] / c		
+MOD	F1	r[a] = r[b] modulo  r[c]		
+MODI	F2	r[b] = r[b] modulo c		
+logic operations
+OR	F1	r[a] = r[b] BITOR r[c]		
+ORI	F2	r[a] =  r[b] BITOR c		
+AND	F1	r[a] = r[b] BITAND r[c]		
+ANDI	F2	r[a] =  r[b] BITAND c		
+BIC	F1	r[a] = r[b] BITAND NEG(r[c])		
+BICI	F2	r[a] =  r[b] BITAND NEG( c)		
+XOR	F1	r[a] = r[b] BITXOR r[c]		
+XORI	F2	r[a] =  r[b] BITXOR c		
+SHL	F1	r[a] = r[b]		
+CHK	F1	if r[a]>= r[c] generate error		
+CHKI	F2	if r[a]>= c generate error		
+memory instructions
+LDB	F1	r[a] = mem[r[b]+c]		
+LDW	F1	r[a] = mem[r[b]+c +0...3]		
+STB	F1	mem[r[b]+c] = r[a]		
+STW	F1	mem[r[b]+c+0…3] = r[a]		
+POP	F2	LDW a, b, 0
+ADDI b, b, c		
+PSH	F2	SUBI b, b, c
+STW a, b, 0		
+branch instructions
+BEQ	F2	if r[a] = 0 
+		else	PC + C
+PC + 1	
+BNE	F2	if r[a] != 0 
+		else	PC + C
+PC + 1	
+BLT	F2	if r[a] < 0 
+		else	PC + C
+PC + 1	
+BGE	F2	if r[a] >= 0 
+		else	PC + C
+PC + 1	
+BLE	F2	if r[a] <= 0 
+		else	PC + C
+PC + 1	
+BGT	F2	if r[a] > 0 
+		else	PC + C
+PC + 1	
+BSR	F2	r[31] = PC+1	PC + C	
+JSR	F3	r[31] = PC+1	PC = C	
+RET	F3	if r[c] =  0 exit	PC = r[c]	
+I/O instructions
+RDWS	F2	r[a] = readint(stdin)	PC + 1	
+WRWS	F2	writeint(stdout, r[a])	PC + 1	
+OPF	F1	r[a] = openfile(string(r[b]), mode(c))	PC + 1	
+RDBF	F1	r[b] = readbyte(r[a])	PC + 1	
+WRWF	F1	writebyte(handle(r[a]), r[b] &0xff)	PC + 1	
+CLF	F1	closefile(handle(r[a]))	PC + 1	
+PSTR	F2	print(string(r[a]+c))	PC + 1	
+PINT	F2	print((int)R[a]	PC + 1	
+

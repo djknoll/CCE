@@ -1,0 +1,43 @@
+ourC-Compiler
+
+// SCANNER
+The following EBNF productions define a regular language that the scanner should recognize.
+digit ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'.
+letter ::= 'A' | ... | 'z'.
+number ::= digit {digit}. //numerical literals
+identifier ::= letter {letter | digit}. //identifiers
+characterliteral ::= ''' (characterwithoutquotes | '"') '' //character literals
+stringliteral ::= '"' {characterwithoutquotes} '"'. //string literals
+characterwithoutquotes ::= all ASCII-characters from 32 up to 126 WITHOUT the double quotes
+keyword ::= 'bool' | 'true' | 'false' | 'char' | 'int' | 'if' | 'then' | 'else' | 'do' | 'while' | 'typedef' | 'struct' | 'const' | 'void' | 'return' | 'break' | 'case' | 'switch' | 'continue' | 'default' | 'NULL'.
+
+// PARSER
+The EBNF productions beneath define the context free language the the parser recognizes.
+program ::= {directives} {structdeclaration} {constdeclaration} {variabledeclaration} {functiondeclaration}. //start symbol
+directive ::= '#include' stringliteral. //preprocessor directives
+structdeclaration ::= structType ('{' signature ';' {signature ';'} '};' | identifier). //custom defined structs
+constdeclaration ::= 'const' signature '=' argument ';'. //global constants
+signature ::= variableSignature [ '[' simpleExpression ']' ]. //variable signatures including arrays
+variableSignature ::= type identifier. //variable signatures without arrays
+type ::= 'int' | 'char' | 'bool' | 'string' | 'file' | structType. //possible types
+structType ::= 'struct' identifier. //struct types
+variabledeclaration ::= signature ([ '=' argument] ';'.
+functiondeclaration ::= func signature '(' [parameterlist] ')' (';' | '{' {variabledeclaration} {statement} '}'). //function declarations including prototypes
+parameterlist ::= variableSignature ['[]'] {',' variableSignature ['[]']}. //function parameters
+statement ::=   ifstatement | whilestatement | returnstatement | assignment_or_functioncall. //possible statements
+assignment_or_functioncall ::= identifier ( assignment | functioncall ) ';'.
+assignment ::= [ '.' identifier | '[' simpleExpression ']'] '=' argument.
+functioncall ::= '(' [argumentlist] ')'. //function calls
+returnstatement ::= 'return' [argument] ';'. //return statement
+variable ::= identifier [ '.' identifier | '[' simpleExpression ']']. //left side of assignments
+argument ::= stringLiteral | characterLiteral | expression. //right side of assignments
+simpleExpression ::= ['-'] term {('+'|'-'|'|') term}. //arithmetic expression
+term ::= factor {('*'|'/'|'%'|'&') factor}. //terms
+factor ::= number | variable | '(' simpleExpression ')' | '!' factor. //factors
+ifstatement ::= 'if(' Expression ')' block ['else' (block | ifstatement)]. //if-statemements
+expression ::= simpleExpression [('=='|'!='|'>'|'>='|'<'|'<=') simpleExpression]. //boolean expressions
+block ::= '{' {statement} '}'. //blocks of statements
+whilestatement ::= 'while' '(' expression ')' block. //while statements
+argumentlist ::= argument {',' argument}. //arguments of function calls
+
+Attention: Semantic difference of gcc-output and our-compiler output (structs and arrays are passed implicitly by reference)
